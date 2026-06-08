@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FachSprache — Architecture Flowchart</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0A0A0A;
+      color: #FFFFFF;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 40px 32px 64px;
+      min-height: 100vh;
+    }
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #00E5FF;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #555555;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .page-desc {
+      font-size: 13px;
+      color: #555555;
+      margin-bottom: 48px;
+      margin-top: 8px;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555555;
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+    .card {
+      background: #141414;
+      border: 1px solid #2A2A2A;
+      border-radius: 2px;
+      padding: 28px 24px;
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #B0B0B0;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2A2A2A;
+      letter-spacing: 0.02em;
+    }
+    .card-title span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #00E5FF;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+    .mermaid { min-width: 0; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>FachSprache</h1>
+    <span class="subtitle">Architecture &amp; Data Flows</span>
+  </div>
+  <p class="page-desc">German business terminology app — FastAPI backend · Groq AI · D3 knowledge graph</p>
+
+  <!-- ── 1. System Overview ─────────────────────────────────────────────────── -->
+  <div class="section-label">1 — System Overview</div>
+  <div class="card">
+    <div class="card-title"><span></span>Layered Architecture</div>
+    <div class="mermaid">
+flowchart LR
+    Browser["🖥️  Browser\nHTML · CSS · JS · D3"]
+    FastAPI["⚡  FastAPI\nlocalhost:8080"]
+    RSS["📰  RSS Feeds\nFAZ · Tagesschau · Spiegel"]
+    Reddit["💬  Reddit\nJSON API"]
+    NewsAPI["🌐  NewsAPI"]
+    Groq["🤖  Groq AI\nLlama 3.1 · 70B"]
+    Files["📁  JSON Files\nglossary · heard · activity"]
+
+    Browser <-->|"fetch() HTTP"| FastAPI
+    FastAPI -->|"feedparser"| RSS
+    FastAPI -->|"urllib"| Reddit
+    FastAPI -->|"requests"| NewsAPI
+    FastAPI <-->|"groq SDK"| Groq
+    FastAPI <-->|"read / write"| Files
+    </div>
+  </div>
+
+  <!-- ── 2 & 3 side by side ─────────────────────────────────────────────────── -->
+  <div class="grid-2">
+
+    <!-- ── 2. News Feed Flow ──────────────────────────────────────────────── -->
+    <div>
+      <div class="section-label">2 — News Feed</div>
+      <div class="card">
+        <div class="card-title"><span></span>Loading &amp; Rendering</div>
+        <div class="mermaid">
+flowchart TD
+    A([App loads]) --> B["/api/news\nGET"]
+    B --> C["feedparser\nRSS scraper"]
+    B --> D["urllib\nReddit JSON"]
+    B --> E["requests\nNewsAPI"]
+    C --> F["30 articles\nFAZ · Tagesschau\nSpiegel"]
+    D --> G["35 posts\nr/Finanzen\nr/germany\nr/Mauerstrassenwetten\n+ 4 more subs"]
+    E --> H["12 articles\nNewsAPI"]
+    F --> I["News Grid\ncards with images"]
+    H --> I
+    G --> J["Left Column\nReddit-style posts\nsubreddit color pills"]
+    I --> K([Click card])
+    J --> K
+    K --> L["Article Drawer →"]
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. Context Explainer ───────────────────────────────────────────── -->
+    <div>
+      <div class="section-label">3 — Context Explainer</div>
+      <div class="card">
+        <div class="card-title"><span></span>Auto-loads on every article open</div>
+        <div class="mermaid">
+flowchart TD
+    A([Article drawer\nopens]) --> B["explainArticle()\nautomatically called"]
+    B --> C["/api/explain-article\nPOST headline + summary"]
+    C --> D["Groq AI\nLlama 3.1 70B\nstructured prompt"]
+    D --> E["Returns JSON"]
+    E --> F["What's happening\nplain English"]
+    E --> G["Why it matters\ncyan highlight"]
+    E --> H["Background\nindustry context"]
+    E --> I["Key Terms\nclickable chips"]
+    I --> J([Chip click →\nauto-fills search bar\n→ triggers lookup])
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 4. Term Lookup & Save ──────────────────────────────────────────────── -->
+  <div class="section-label">4 — Term Lookup &amp; Glossary</div>
+  <div class="card">
+    <div class="card-title"><span></span>From search to knowledge graph</div>
+    <div class="mermaid">
+flowchart LR
+    A(["User types term\nor clicks word in drawer"]) --> B["Translate button\nor Enter key"]
+    B --> C["/api/lookup\nPOST · term"]
+    C --> D["Groq AI\nstructured prompt"]
+    D --> E["term · translation\nexplanation · example\ndeconstruction"]
+    E --> F["Lookup panel\nexpands below search bar"]
+    F --> G{"Save?"}
+    G -- No --> H([Done])
+    G -- Yes --> I["Select tags\noptional"]
+    I --> J["/api/glossary\nPOST"]
+    J --> K[("glossary.json")]
+    J --> L["/api/glossary\n/suggest-relations\nPOST · Groq AI"]
+    L --> M["Relation suggestions\nConnect related terms"]
+    M --> N["/api/glossary/link\nPOST term_a · term_b"]
+    N --> K
+    K --> O["D3 Force Graph\nnodes = terms\nedges = links\ncolors = tags"]
+    K --> P["Term of the Day\nrandom pick on load"]
+    </div>
+  </div>
+
+  <!-- ── 5. Activity Tracking ───────────────────────────────────────────────── -->
+  <div class="section-label">5 — Activity Tracking</div>
+  <div class="card">
+    <div class="card-title"><span></span>Heatmap &amp; heard-today strip</div>
+    <div class="mermaid">
+flowchart LR
+    A(["Log button\n— heard a term"]) --> C
+    B(["Save term\nto glossary"]) --> C
+    D(["Translate\nany term"]) --> C
+    C[("activity_log.json\nYYYY-MM-DD → count")]
+    C --> E["/api/activity\nGET"]
+    E --> F["90-day Heatmap\ncyan intensity\n= daily activity level"]
+
+    A --> G[("heard_today.json\nterm · timestamp")]
+    G --> H["/api/heard\nGET"]
+    H --> I["Heard Pills Strip\nbelow search bar\nalways visible"]
+    I --> J([Click chip →\nauto-triggers lookup])
+    </div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      flowchart: { curve: 'basis', padding: 20 },
+      themeVariables: {
+        darkMode: true,
+        background:          '#0A0A0A',
+        primaryColor:        '#1E1E1E',
+        primaryTextColor:    '#FFFFFF',
+        primaryBorderColor:  '#3A3A3A',
+        lineColor:           '#555555',
+        secondaryColor:      '#141414',
+        tertiaryColor:       '#141414',
+        clusterBkg:          '#141414',
+        clusterBorder:       '#2A2A2A',
+        titleColor:          '#00E5FF',
+        edgeLabelBackground: '#0A0A0A',
+        nodeTextColor:       '#FFFFFF',
+        mainBkg:             '#1E1E1E',
+        nodeBorder:          '#3A3A3A',
+        labelBackground:     '#0A0A0A',
+        labelTextColor:      '#FFFFFF',
+        fontFamily:          '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        fontSize:            '13px',
+      }
+    });
+  </script>
+
+</body>
+</html>

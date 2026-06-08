@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FachSprache — German Business Terminology</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Header: logo left | tabs center | controls right (Change 5) ──────── -->
+  <header id="site-header">
+    <div class="header-left">
+      <span class="logo">FachSprache</span>
+    </div>
+
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="news">News Feed</button>
+      <button class="tab-btn" data-tab="dict">My Dictionary</button>
+    </nav>
+
+    <div class="header-right">
+      <span id="status-msg" class="status-msg"></span>
+      <span id="news-count" class="news-count"></span>
+      <button id="refresh-btn" class="btn-secondary">&#8635; Refresh</button>
+      <span id="status-terms" class="status-terms">0 terms saved</span>
+    </div>
+  </header>
+
+  <!-- ── Full-width search bar below header (Change 5) ────────────────────── -->
+  <div class="search-bar-wrap">
+    <input
+      id="lookup-input"
+      type="text"
+      placeholder="Look up or log a term…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button id="lookup-btn" class="btn-primary">Translate</button>
+    <button id="heard-btn" class="btn-log">Log</button>
+  </div>
+
+  <!-- ── Lookup result panel: heard row + collapsible results (Change 5) ───── -->
+  <div class="lookup-result-panel">
+    <div class="lookup-heard-row">
+      <span id="heard-count" class="heard-count"></span>
+      <div id="heard-list" class="heard-list"></div>
+    </div>
+    <div id="lookup-results-section" class="lookup-results-section">
+      <button id="close-lookup-panel" class="close-lookup-btn" aria-label="Close results">&#x2715;</button>
+      <div id="lookup-status" class="lookup-status"></div>
+      <div id="lookup-result" class="lookup-result hidden"></div>
+      <div id="tag-selector" class="tag-selector hidden"></div>
+      <div id="save-row" class="save-row hidden">
+        <button id="save-btn" class="btn-save">Save to glossary</button>
+      </div>
+      <div id="relation-suggestions" class="relation-suggestions hidden"></div>
+    </div>
+  </div>
+
+  <div class="app-body">
+
+    <!-- ── Left column: heatmap + Reddit feed (Changes 1–4) ─────────────── -->
+    <aside class="left-col">
+
+      <!-- Compact 90-day heatmap (Change 2) -->
+      <div class="left-heatmap-section">
+        <div class="left-heatmap-header">
+          <span class="left-heatmap-title">Activity</span>
+          <span id="heatmap-total" class="heatmap-total"></span>
+        </div>
+        <div id="heatmap-grid" class="heatmap-grid"></div>
+        <div id="heatmap-month-summary" class="heatmap-month-summary"></div>
+      </div>
+
+      <!-- Reddit section header -->
+      <div class="left-reddit-header">
+        <span class="left-reddit-title">Reddit</span>
+        <span id="reddit-count" class="reddit-count"></span>
+      </div>
+
+      <!-- Scrollable Reddit posts (Changes 3 + 4) -->
+      <div class="left-reddit-scroll">
+        <div id="reddit-list" class="reddit-list"></div>
+      </div>
+
+    </aside>
+
+    <!-- ── Main content area ──────────────────────────────────────────────── -->
+    <main class="main-content">
+
+      <!-- Tab: News Feed -->
+      <div class="tab-panel" id="tab-news">
+        <div class="news-grid-scroll">
+          <div id="news-grid" class="news-grid"></div>
+        </div>
+      </div>
+
+      <!-- Tab: My Dictionary -->
+      <div class="tab-panel hidden" id="tab-dict">
+        <div class="dict-toolbar">
+          <div id="totd-banner" class="totd-banner hidden"></div>
+          <div class="dict-toolbar-row">
+            <div class="section-label" style="margin-bottom:0">Saved Glossary</div>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Filter…"
+              class="search-mini"
+              autocomplete="off"
+            />
+          </div>
+          <div id="tag-filter-bar" class="tag-filter-bar"></div>
+        </div>
+
+        <div class="dict-body">
+          <!-- D3 Knowledge Graph -->
+          <div id="graph-container" class="graph-container">
+            <div class="graph-placeholder" id="graph-placeholder">
+              <span>Save 2+ terms to see the knowledge graph</span>
+            </div>
+            <svg id="knowledge-graph"></svg>
+          </div>
+
+          <!-- Glossary list -->
+          <div id="glossary-list" class="glossary-list"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── Article drawer ────────────────────────────────────────────────── -->
+    <aside class="article-drawer" id="article-drawer">
+      <div class="drawer-inner" id="drawer-inner"></div>
+    </aside>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
