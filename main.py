@@ -6,12 +6,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.web_server import app
-from src.mcp_server import mcp
 from src.config import WEB_HOST, WEB_PORT
 
 
 def _run_web():
-    uvicorn.run(app, host=WEB_HOST, port=WEB_PORT, log_level="warning")
+    uvicorn.run(app, host=WEB_HOST, port=WEB_PORT, log_level="info")
 
 
 if __name__ == "__main__":
@@ -28,5 +27,7 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\n[FachSprache] Stopped.")
     else:
+        # Only import mcp when running as MCP server (local Claude Desktop use)
+        from src.mcp_server import mcp
         print("[FachSprache] MCP server starting on stdio...")
         mcp.run(transport="stdio")
